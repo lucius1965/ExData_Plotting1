@@ -13,17 +13,21 @@ attach (dati)
 ## The data for the two days.
 subset <- Date == "1/2/2007" | Date == "2/2/2007" 
 datiNew <- dati[subset, ]
+attach(datiNew)
 
-#put them in numerical form
-printingData <- as.numeric(datiNew$Global_active_power)
+#add another column for DateTime in required format
+appoggio <- paste(Date, Time) #create the vector
+#then add it to table in proper format
+datiNew$DateTime <- strptime(appoggio, "%d/%m/%Y %H:%M:%S")
 
-#then print the histogram required
-png(filename = "plot1.png", 
-    width = 480, height = 480, 
+rownames(datiNew) <- 1:nrow(datiNew)
+attach(datiNew)
+
+png(filename = "plot2.png", width = 480, height = 480,
     units = "px", bg = "transparent")
-hist(printingData, 
-     col = "red", 
-     main = "Global Active Power", 
-     xlab = "Global Active Power (kilowatts)",
-     breaks = 12, ylim = c(0, 1200))
+plot(DateTime, Global_active_power, 
+     type = "l",
+     xlab = "",
+     ylab = "Global Active Power (kilowatts)")
 dev.off()
+
